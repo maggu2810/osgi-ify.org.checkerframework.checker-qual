@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>de.maggu2810.osgi-ify.org.checkerframework.checker-qual</groupId>
+  <artifactId>checker-qual</artifactId>
+  <version>2.1.5</version>
+  <packaging>bundle</packaging>
+
+  <properties>
+    <checkerframework.version>2.1.5</checkerframework.version>
+  </properties>
+
+  <issueManagement>
+    <url>https://github.com/maggu2810/osgi-ify.org.checkerframework.checker-qual/issues</url>
+    <system>Github</system>
+  </issueManagement>
+
+  <distributionManagement>
+    <repository>
+      <id>bintray</id>
+      <url>https://api.bintray.com/maven/maggu2810/maven/osgi-ify.org.checkerframework.checker-qual</url>
+    </repository>
+    <snapshotRepository>
+      <id>bintray</id>
+      <url>http://oss.jfrog.org/artifactory/simple/oss-snapshot-local/</url>
+    </snapshotRepository>
+  </distributionManagement>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.checkerframework</groupId>
+      <artifactId>checker-qual</artifactId>
+      <version>${checkerframework.version}</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <version>3.0.1</version>
+        <extensions>true</extensions>
+        <configuration>
+          <unpackBundle>false</unpackBundle>
+          <instructions>
+            <Private-Package>!*</Private-Package>
+            <Embed-Dependency>groupId=org.checkerframework;artifactId=checker-qual;version=${checkerframework.version};inline=true</Embed-Dependency>
+            <_exportcontents>*;version=${checkerframework.version}</_exportcontents>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>
