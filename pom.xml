@@ -4,11 +4,13 @@
 
   <groupId>de.maggu2810.osgi-ify.org.checkerframework.checker-qual</groupId>
   <artifactId>checker-qual</artifactId>
-  <version>2.1.5</version>
+  <version>2.1.6</version>
   <packaging>bundle</packaging>
 
   <properties>
-    <checkerframework.version>2.1.5</checkerframework.version>
+    <wrapped.groupId>org.checkerframework</wrapped.groupId>
+    <wrapped.artifactId>${project.artifactId}</wrapped.artifactId>
+    <wrapped.version>${project.version}</wrapped.version>
   </properties>
 
   <issueManagement>
@@ -29,9 +31,9 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.checkerframework</groupId>
-      <artifactId>checker-qual</artifactId>
-      <version>${checkerframework.version}</version>
+      <groupId>${wrapped.groupId}</groupId>
+      <artifactId>${wrapped.artifactId}</artifactId>
+      <version>${wrapped.version}</version>
     </dependency>
   </dependencies>
 
@@ -40,16 +42,70 @@
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
-        <version>3.0.1</version>
+        <version>3.2.0</version>
         <extensions>true</extensions>
         <configuration>
           <unpackBundle>false</unpackBundle>
           <instructions>
             <Private-Package>!*</Private-Package>
-            <Embed-Dependency>groupId=org.checkerframework;artifactId=checker-qual;version=${checkerframework.version};inline=true</Embed-Dependency>
-            <_exportcontents>*;version=${checkerframework.version}</_exportcontents>
+            <Embed-Dependency>groupId=${wrapped.groupId};artifactId=${wrapped.artifactId};version=${wrapped.version};inline=true</Embed-Dependency>
+            <_exportcontents>*;version=${wrapped.version}</_exportcontents>
           </instructions>
         </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>3.0.0</version>
+        <executions>
+          <execution>
+            <id>copy-checkerframework-stuff</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>${wrapped.groupId}</groupId>
+                  <artifactId>${wrapped.artifactId}</artifactId>
+                  <version>${wrapped.version}</version>
+                  <classifier>sources</classifier>
+                  <type>jar</type>
+                  <destFileName>${wrapped.groupId}-${wrapped.artifactId}-${wrapped.version}-sources.jar</destFileName>
+                </artifactItem>
+              </artifactItems>
+              <outputDirectory>${project.build.directory}</outputDirectory>
+              <overWriteReleases>false</overWriteReleases>
+              <overWriteSnapshots>true</overWriteSnapshots>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>1.12</version>
+        <executions>
+          <execution>
+            <id>attach-artifacts</id>
+            <phase>package</phase>
+            <goals>
+              <goal>attach-artifact</goal>
+            </goals>
+            <configuration>
+              <artifacts>
+                <artifact>
+                  <file>${project.build.directory}/${wrapped.groupId}-${wrapped.artifactId}-${wrapped.version}-sources.jar</file>
+                  <type>jar</type>
+                  <classifier>sources</classifier>
+                </artifact>
+              </artifacts>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
