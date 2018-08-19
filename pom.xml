@@ -8,6 +8,7 @@
   <packaging>bundle</packaging>
 
   <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <wrapped.groupId>org.checkerframework</wrapped.groupId>
     <wrapped.artifactId>${project.artifactId}</wrapped.artifactId>
     <wrapped.version>${project.version}</wrapped.version>
